@@ -4,7 +4,7 @@ Pod::Spec.new do |spec|
    spec.version             = "0.3.1"
    spec.license             = "Copyright 2016 kingsoft Ltd. All rights reserved"
    spec.source              = { :git => "https://github.com/ksvc/QYLiveSDK_iOS.git", :tag => "v0.3.1"}
-   spec.homepage            = "https://github.com/"
+   spec.homepage            = "https://github.com/ksvc/QYLiveSDK_iOS/wiki"
    spec.author              = { "ksc-ved iOS Team" => "zhangjun5@kingsoft.com"  }
    spec.platform            = :ios, '7.0'   
    spec.vendored_frameworks = 'frameworks/static/QYLiveSDK.framework'
