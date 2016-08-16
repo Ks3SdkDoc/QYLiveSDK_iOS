@@ -46,16 +46,18 @@ SDK中引入了一些常用的第三方库，如果开发者的工程中包含�
 
  #import <QYLiveSDK/QYLiveSDK.h> 
 
-* 开发者从金山云Server获得Token。
-* 用Token初始化 SDK，开发者APP中只初始化一次token就可以。
+* 开发者从金山云获取AppKey，AppKey用于标识用户身份，必填。
+* andObject所带参数是字典类型，可动态配置SDK的状态，传空是默认状态。
+* 用AppKey初始化 SDK，开发者APP中只初始化一次token就可以。
 
 ```
-[[QYLiveEngine sharedInstance] initWithToken:QYLIVE_TOKEN];
+[[QYLiveEngine sharedInstance] initWithAppKey:QYLIVE_AK andObject:nil]
 ```
-* 初始化Token成功之后，调用connect方法，连接金山云Server,获取openid
+* 初始化AppKey成功之后，调用connect方法，连接金山云Server,获取openid
+* 如果是登录状态，传入token值。如果传空是未登录状态，用户是游客状态。
 
 ```
-    [[QYLiveEngine sharedInstance] connect:^(QYErrCode code, NSInteger what, NSString * _Nullable extra) {
+    [[QYLiveEngine sharedInstance] connectWithToken:nil :^(QYErrCode code, NSInteger what, NSString * _Nullable extra) {
         
         if (code == QYShareSuccess) {
         
@@ -70,7 +72,7 @@ SDK中引入了一些常用的第三方库，如果开发者的工程中包含�
 * connect成功之后，在connect的成功回调中同步用户信息到金山云Server
 
 ```
-    [[QYLiveEngine sharedInstance] connect:^(QYErrCode code, NSInteger what, NSString * _Nullable extra) {
+    [[QYLiveEngine sharedInstance] connectWithToke:nil :^(QYErrCode code, NSInteger what, NSString * _Nullable extra) {
         
         if (code == QYShareSuccess) {
         
@@ -95,15 +97,26 @@ SDK中引入了一些常用的第三方库，如果开发者的工程中包含�
 
 
 ```
-* 在需要进入直播页面的时候调用enterMainScene方法，一键进入直播列表页
+* 在需要进入直播页面的时候调用enterScene方法，一键进入直播列表页/充值页
 
 ```
-- (void)enterLive
+- (void)enterLive:(UIButton *)button
 {
-    UIViewController *liveViewController = [[QYLiveEngine sharedInstance] enterMainScene:nil];
+    NSDictionary *context = nil;
+    if (button.tag == 99) {
+        
+        context = @{kQYLiveEngineViewController : @(QYReChargeViewController)};
+        
+    }else if (button.tag == 98){
+    
+        context = @{kQYLiveEngineViewController : @(QYMainViewController)};
 
-    [self.navigationController pushViewController:liveViewController animated:YES];
+    }
+    UIViewController *liveViewController = [[QYLiveEngine sharedInstance] enterScene:context];
+    UINavigationController *navigationVc = [[UINavigationController alloc] initWithRootViewController:liveViewController];
+    [self presentViewController:navigationVc animated:YES completion:nil];
 
+    
 }
 
 
